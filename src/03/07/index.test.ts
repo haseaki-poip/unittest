@@ -33,10 +33,11 @@ describe("非同期処理", () => {
 });
 
 test("指定時間待つと、経過時間をもって reject される", async () => {
-  expect.assertions(1);
+  expect.assertions(1); // テストが最低一回起こることを設定
   try {
     await timeout(50); // timeout関数のつもりが、wait関数にしてしまった
-    // ここで終了してしまい、テストは成功する
+    // wait関数の場合ここで終了してしまい、テストは成功する
+    // expectを一回もせずテストが行われないためエラーを吐き出してくれる。
   } catch (err) {
     // アサーションは実行されない
     expect(err).toBe(50);
@@ -48,4 +49,5 @@ test("return していないため、Promise が解決する前にテストが�
   expect(wait(2000)).resolves.toBe(3000);
   // 正しくはアサーションを return する
   // return expect(wait(2000)).resolves.toBe(3000);
+  // returnをつけるかasync, awaitをつけるかを徹底する
 });

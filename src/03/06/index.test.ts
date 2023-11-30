@@ -42,6 +42,9 @@ describe("数値の検証", () => {
     expect(0.1 + 0.2).not.toBe(0.3);
   });
   test("小数計算の指定桁までを比較する", () => {
+    // jsでは小数の計算に誤差が生じる
+    // 0.1 + 0.2は0.30000000000000004となる
+    //　そのため小数の計算結果のテストでは桁を指定するといった工夫をしなければならない
     expect(0.1 + 0.2).toBeCloseTo(0.3); // デフォルトは 2桁
     expect(0.1 + 0.2).toBeCloseTo(0.3, 15);
     expect(0.1 + 0.2).not.toBeCloseTo(0.3, 16);
@@ -68,6 +71,7 @@ describe("文字列の検証", () => {
     expect(str).not.toMatch(/さようなら/);
   });
   test("stringContaining", () => {
+    // objectの中のプロパティでも指定の文字列を含んでいればokとできる
     expect(obj).toEqual({
       status: 200,
       message: expect.stringContaining("世界"),
@@ -86,6 +90,8 @@ describe("配列の検証", () => {
     const tags = ["Jest", "Storybook", "Playwright", "React", "Next.js"];
     test("toContain", () => {
       expect(tags).toContain("Jest");
+      // 複数の要素を検証する場合
+      expect(tags).toEqual(expect.arrayContaining(["Jest", "Storybook"]));
       expect(tags).toHaveLength(5);
     });
   });
@@ -97,6 +103,7 @@ describe("配列の検証", () => {
     test("toContainEqual", () => {
       expect(articles).toContainEqual(article1);
     });
+    // 複数の要素を検証する場合
     test("arrayContaining", () => {
       expect(articles).toEqual(expect.arrayContaining([article1, article3]));
     });
@@ -123,6 +130,21 @@ describe("オブジェクトの検証", () => {
       title: "Testing with Jest",
       author: expect.objectContaining({ name: "taroyamada" }),
     });
+
+    // さらにネストの中で指定の文字列を含むか検証できる
+    expect(article).toEqual({
+      title: "Testing with Jest",
+      author: expect.objectContaining({
+        name: expect.stringContaining("taro"),
+      }),
+    });
+    expect(article).toEqual({
+      title: "Testing with Jest",
+      author: expect.objectContaining({
+        name: expect.not.stringContaining("jiro"),
+      }),
+    });
+
     expect(article).toEqual({
       title: "Testing with Jest",
       author: expect.not.objectContaining({ gender: "man" }),
