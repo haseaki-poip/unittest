@@ -1,7 +1,10 @@
 import { greet, sayGoodBye } from "./greet";
 
+// "./greet"ないの都合の悪い関数のみを置き換えることができる
 jest.mock("./greet", () => ({
   ...jest.requireActual("./greet"),
+  // greet: jest.requireActual("./greet").greet,
+  // ともできる
   sayGoodBye: (name: string) => `Good bye, ${name}.`,
 }));
 
