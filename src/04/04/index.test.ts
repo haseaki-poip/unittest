@@ -4,6 +4,9 @@ import { getMyArticlesData, httpError } from "../fetchers/fixtures";
 
 jest.mock("../fetchers");
 
+// 何も引数がない場合はstatusを200に初期値を設定
+// エラーがthrowされる場合と正常の場合のテストを簡単に出し分けられるようにできる。
+// レスポンスステータスごとのテストで一つ一つjest.spyOnを書く必要がなくなる
 function mockGetMyArticles(status = 200) {
   if (status > 299) {
     return jest
@@ -38,6 +41,8 @@ test("指定したタグをもつ記事が一件以上ある場合、リンク�
 
 test("データ取得に失敗した場合、reject される", async () => {
   mockGetMyArticles(500);
+  expect.assertions(1); // 書籍での記載漏れ?これがないと200にしてもテストが通ってしまう。
+
   await getMyArticleLinksByCategory("testing").catch((err) => {
     expect(err).toMatchObject({
       err: { message: "internal server error" },

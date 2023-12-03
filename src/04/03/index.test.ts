@@ -1,6 +1,7 @@
 import { getGreet } from ".";
 import * as Fetchers from "../fetchers";
 import { httpError } from "../fetchers/fixtures";
+// スタブ実装では02の方法よりこの03のspyOnを使ったほうがTypeScriptの親和性が高く恩恵を受けられる
 
 jest.mock("../fetchers");
 
