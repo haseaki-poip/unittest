@@ -34,11 +34,23 @@ test("モック関数は実行時の引数を記録している", () => {
     mockFn(message);
   }
   greet("hello");
+
+  // 違った引数のmockFn関数が呼び出されても検証できる
+  // 文字列型以外にもnumber型など他の方でも引数に設定できる
   expect(mockFn).toHaveBeenCalledWith("hello");
+});
+
+// 引数に関数がある場合に活躍する
+// 関数の引数が正しいか確認することができる
+test("モック関数はテスト対象の引数として使用できる", () => {
+  const mockFn = jest.fn();
+  greet("Jiro", mockFn);
+  expect(mockFn).toHaveBeenCalledWith("Hello! Jiro");
 });
 
 test("モック関数はテスト対象の引数として使用できる", () => {
   const mockFn = jest.fn();
   greet("Jiro", mockFn);
-  expect(mockFn).toHaveBeenCalledWith("Hello! Jiro");
+  // expectの補助関数によって部分一致も検証できる
+  expect(mockFn).toHaveBeenCalledWith(expect.stringContaining("Jiro"));
 });
