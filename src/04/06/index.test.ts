@@ -6,6 +6,8 @@ import { ArticleInput } from "../fetchers/type";
 
 jest.mock("../fetchers");
 
+// 実際のバックエンドapiでの挙動に近くなるようモック関数を作る
+// 200番台以外のエラーの場合と今回は文字列の長さのバリデーションによってエラーを返す
 function mockPostMyArticle(input: ArticleInput, status = 200) {
   if (status > 299) {
     return jest
@@ -25,6 +27,7 @@ function mockPostMyArticle(input: ArticleInput, status = 200) {
   }
 }
 
+// inputの引数を受け入れ、上書きできるようにすることで、エラーの出るオブジェクトを生成できるようにする
 function inputFactory(input?: Partial<ArticleInput>) {
   return {
     tags: ["testing"],

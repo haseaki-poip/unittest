@@ -1,11 +1,15 @@
 import { greetByTime } from ".";
 
 describe("greetByTime(", () => {
+  // このdescribeないのテストで共通することをテスト前に処理する
   beforeEach(() => {
+    // 偽のタイマーを設定できるようにする
     jest.useFakeTimers();
   });
 
+  // テスト後に処理する関数
   afterEach(() => {
+    // タイマーの設定を破棄
     jest.useRealTimers();
   });
 
