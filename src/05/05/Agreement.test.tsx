@@ -4,6 +4,7 @@ import { Agreement } from "./Agreement";
 test("fieldset のアクセシブルネームは、legend を引用している", () => {
   render(<Agreement />);
   expect(
+    // groupロールのnameはfieldsetの子要素のlegendに該当する
     screen.getByRole("group", { name: "利用規約の同意" })
   ).toBeInTheDocument();
 });

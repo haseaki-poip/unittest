@@ -15,12 +15,23 @@ test("メールアドレス入力欄", async () => {
   render(<InputAccount />);
   const textbox = screen.getByRole("textbox", { name: "メールアドレス" });
   const value = "taro.tanaka@example.com";
+  // 入力する操作は非同期の処理のためawaitで待つ
   await user.type(textbox, value);
   expect(screen.getByDisplayValue(value)).toBeInTheDocument();
 });
 
+// 以下のテストではエラーが出る
+// type=passwardのinput要素はロールを持たないことに注意
+// test("パスワード入力欄", async () => {
+//   render(<InputAccount />);
+//   expect(() =>
+//     screen.getByRole("textbox", { name: "メールアドレス" })
+//   ).toBeInTheDocument();
+// });
+
 test("パスワード入力欄", async () => {
   render(<InputAccount />);
+  // toThrowはエラーが出ることを予測したテスト
   expect(() => screen.getByPlaceholderText("8文字以上で入力")).not.toThrow();
   expect(() => screen.getByRole("textbox", { name: "パスワード" })).toThrow();
 });
