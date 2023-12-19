@@ -32,6 +32,7 @@ test("メールアドレス入力欄", async () => {
 test("パスワード入力欄", async () => {
   render(<InputAccount />);
   // toThrowはエラーが出ることを予測したテスト
+  // getByRoleをするとエラーが出てしまうがそれを利用し、関数内でやることでtoThrowを使える
   expect(() => screen.getByPlaceholderText("8文字以上で入力")).not.toThrow();
   expect(() => screen.getByRole("textbox", { name: "パスワード" })).toThrow();
 });

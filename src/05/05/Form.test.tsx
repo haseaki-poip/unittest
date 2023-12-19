@@ -6,6 +6,8 @@ const user = userEvent.setup();
 
 test("form のアクセシブルネームは、見出しを引用している", () => {
   render(<Form />);
+  // form要素はアクセシブルネームを与えることでロールにfomを持つ
+  // アクセシブルネームがないとgetByRoleでformを指定するとエラーとなる
   expect(
     screen.getByRole("form", { name: "新規アカウント登録" })
   ).toBeInTheDocument();

@@ -5,6 +5,8 @@ import { Form } from "./Form";
 
 const user = userEvent.setup();
 
+// user操作はあらかじめ関数として用意しておくことで繰り返し使用できる
+// 繰り返し使用しない場合はやらなくて良い
 async function inputContactNumber(
   inputValues = {
     name: "田中 太郎",
@@ -22,6 +24,7 @@ async function inputContactNumber(
   return inputValues;
 }
 
+// 入力項目が多いほど関数化の効果が高い
 async function inputDeliveryAddress(
   inputValues = {
     postalCode: "167-0051",
@@ -55,6 +58,9 @@ async function clickSubmit() {
   );
 }
 
+// スパイとそれをスコープ内で利用する関数を同時に生成し返す関数を作成
+// mockFnはスコープ外で定義しても良いがそれだと他のテストでも使用する場合厄介
+// testごとにスパイのmockFnを生成する必要がある
 function mockHandleSubmit() {
   const mockFn = jest.fn();
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -80,6 +86,7 @@ describe("過去のお届け先がない場合", () => {
     const contactNumber = await inputContactNumber();
     const deliveryAddress = await inputDeliveryAddress();
     await clickSubmit();
+    // 送信時の処理関数が入力した値を受け取れているか
     expect(mockFn).toHaveBeenCalledWith(
       expect.objectContaining({ ...contactNumber, ...deliveryAddress })
     );
@@ -100,6 +107,14 @@ describe("過去のお届け先がある場合", () => {
     expect(
       screen.getByRole("group", { name: "過去のお届け先" })
     ).toBeDisabled();
+
+    // 選択していない時新しいお届け先はないことを確認
+    // getByRoleはnullであることを想定していないためqueryByRoleを使用
+    expect(screen.queryByRole("group", { name: "新しいお届け先" })).toBeNull();
+    // またはエラーが出るgetByRoleを関数で囲むことでtoThrowを使えるようにする
+    expect(() =>
+      screen.getByRole("group", { name: "新しいお届け先" })
+    ).toThrow();
   });
 
   test("「いいえ」を選択・入力・送信すると、入力内容が送信される", async () => {
@@ -109,7 +124,14 @@ describe("過去のお届け先がある場合", () => {
     expect(
       screen.getByRole("group", { name: "過去のお届け先" })
     ).toBeInTheDocument();
+
+    // 新しいお届け先はないことを確認
+    expect(() =>
+      screen.getByRole("group", { name: "新しいお届け先" })
+    ).toThrow();
+
     const inputValues = await inputContactNumber();
+
     await clickSubmit();
     expect(mockFn).toHaveBeenCalledWith(expect.objectContaining(inputValues));
   });
@@ -121,6 +143,12 @@ describe("過去のお届け先がある場合", () => {
     expect(
       screen.getByRole("group", { name: "新しいお届け先" })
     ).toBeInTheDocument();
+
+    // 過去のお届け先はないことを確認
+    expect(() =>
+      screen.getByRole("group", { name: "過去のお届け先" })
+    ).toThrow();
+
     const contactNumber = await inputContactNumber();
     const deliveryAddress = await inputDeliveryAddress();
     await clickSubmit();
