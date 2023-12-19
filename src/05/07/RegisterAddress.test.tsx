@@ -57,6 +57,8 @@ test("バリデーションエラー時「不正な入力値が含まれてい�
 test("不明なエラー時「不明なエラーが発生しました」が表示される", async () => {
   render(<RegisterAddress />);
   await fillValuesAndSubmit();
+  // mock関数を使用していないためテストではAPI処理をすることができず不明なエラーとが吐かれる
+  // 　それをそのまま利用して不明なエラーが出た時の動作が正しいか確認する
   expect(screen.getByText("不明なエラーが発生しました")).toBeInTheDocument();
 });
 
